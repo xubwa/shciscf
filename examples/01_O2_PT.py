@@ -45,7 +45,7 @@ e_CASSCF = mc.mc1step()[0]
 # Create SHCI molecule for just variational opt.
 # Active spaces chosen to reflect valence active space.
 mc = shci.SHCISCF(mf, ncas, nelecas)
-mc.fcisolver.mpiprefix = "mpirun -np 2"
+mc.fcisolver.num_thrds = 2 # no need to set it unless you don't want to use all cores to run mpi.
 mc.fcisolver.stochastic = True
 mc.fcisolver.nPTiter = 0  # Turn off perturbative calc.
 mc.fcisolver.sweep_iter = [0]
@@ -56,7 +56,7 @@ e_noPT = mc.mc1step()[0]
 # Run a single SHCI iteration with perturbative correction.
 mc.fcisolver.stochastic = False  # Turns on deterministic PT calc.
 mc.fcisolver.epsilon2 = 1e-8
-shci.writeSHCIConfFile(mc.fcisolver, [nelecas / 2, nelecas / 2], False)
+shci.writeSHCIConfFile(mc.fcisolver, [nelecas//2, nelecas//2], ncas, False)
 shci.executeSHCI(mc.fcisolver)
 e_PT = shci.readEnergy(mc.fcisolver)
 

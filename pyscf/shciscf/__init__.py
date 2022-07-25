@@ -18,3 +18,6 @@
 #
 
 __version__ = '0.0.1'
+from . import shci
+from . import spinor2sph
+from . import somf

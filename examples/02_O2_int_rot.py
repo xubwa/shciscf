@@ -42,18 +42,18 @@ nfrozen = 2  # Number of orbitals that won't be rotated/optimized.
 # Calculate energy of the molecules with frozen core.
 mc = shci.SHCISCF(mf, ncas, nelecas)
 mc.frozen = nfrozen  # Freezes the innermost 2 orbitals.
-mc.fcisolver.sweep_iter = [0]
-mc.fcisolver.sweep_epsilon = [1e-3]  # Loose variational tolerances.
-mc.fcisolver.nPTiter = 0
+#mc.fcisolver.sweep_iter = [0]
+#mc.fcisolver.sweep_epsilon = [1e-3]  # Loose variational tolerances.
+#mc.fcisolver.nPTiter = 0
 e_noaa = mc.mc1step()[0]
 
 # Calculate energy of the molecule with frozen core and active-active rotations
 mc = shci.SHCISCF(mf, ncas, nelecas)
 mc.frozen = nfrozen  # Freezes the innermost 2 orbitals.
 mc.internal_rotation = True  # Do active-active orbital rotations.
-mc.fcisolver.sweep_iter = [0]
-mc.fcisolver.sweep_epsilon = [1e-3]
-mc.fcisolver.nPTiter = 0
+#mc.fcisolver.sweep_iter = [0]
+#mc.fcisolver.sweep_epsilon = [1e-3]
+#mc.fcisolver.nPTiter = 0
 mc.max_cycle_macro = 20
 e_aa = mc.mc1step()[0]
 

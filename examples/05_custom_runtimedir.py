@@ -32,7 +32,7 @@ t0 = time.time()
 #
 
 mol = gto.Mole()
-mol.build(verbose=3, atom="C 0 0 0; C 0 0 1.8", basis="ccpvdz")
+mol.build(verbose=4, atom="C 0 0 0; C 0 0 1.8", basis="ccpvdz")
 mf = scf.RHF(mol).run()
 
 #
@@ -43,9 +43,11 @@ nelecas = 8
 mc = shci.SHCISCF(mf, ncas, nelecas)
 mc.fcisolver.sweep_iter = [0, 3]
 mc.fcisolver.sweep_epsilon = [1.0e-3, 1.0e-4]
-mc.fcisolver.runtimeDir = "custom_runtime"
-if not os.path.exists(mc.fcisolver.runtimeDir):
-    os.mkdir(mc.fcisolver.runtimeDir)
+print('hard coded sweep_iter:{:} and sweep_epsilon:{:}'.format(mc.fcisolver.sweep_iter, mc.fcisolver.sweep_epsilon))
+mc.fcisolver.epsilon1 = 1e-4 # setting epsilon1 can automatically generate a sweep_iter and sweep_epsilon
+print('automatically generated sweep_iter {:}'.format(mc.fcisolver.sweep_iter))
+print('automatically generated sweep_epsilon {:}'.format(mc.fcisolver.sweep_epsilon))
+mc.fcisolver.runtime_dir = "custom_runtime" # no need to manualy create this directory with the new interface.
 mc.kernel()
 
 print("Total Time:    ", time.time() - t0)

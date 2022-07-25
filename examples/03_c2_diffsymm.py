@@ -41,13 +41,13 @@ myhf.kernel()
 ##USE SHCISCF
 solver1 = shci.SHCI(mol)
 solver1.irrep_nelec = {"A1g": (2, 1), "A1u": (1, 1), "E1ux": (1, 1), "E1uy": (1, 0)}
-solver1.prefix = "solver1"
+solver1.runtime_dir = "solver1"
 solver1.epsilon2 = 1.0e-7
 solver1.stochastic = False
 
 solver2 = shci.SHCI(mol)
 solver2.irrep_nelec = {"A1g": (2, 1), "A1u": (1, 1), "E1ux": (1, 0), "E1uy": (1, 1)}
-solver2.prefix = "solver2"
+solver2.runtime_dir = "solver2"
 solver2.epsilon2 = 1.0e-7
 solver2.stochastic = False
 
@@ -58,4 +58,3 @@ mycas.kernel()
 print("Total Time:    ", time.time() - t0)
 
 # File cleanup
-solver1.cleanup_dice_files()

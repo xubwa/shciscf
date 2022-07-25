@@ -118,3 +118,52 @@ def convert_lzsym(gpname, orbsym):
         gpname = pyscf.symm.std_symb(gpname)
         orbsym = [IRREP_MAP[gpname][i] for i in orbsym]
     return orbsym
+import numpy
+from pyscf.fci import addons
+def get_init_guess(norb, nelec, nroots, orbsym, spin=None, wfnsym=0):
+    neleca, nelecb = addons._unpack_nelec(nelec, spin)
+    astring = bstring = numpy.full(norb, False)
+    astring[:neleca] = True
+    bstring[:nelecb] = True
+    if wfnsym is None:
+        wfnsym = 0
+    hfsym = 0
+    for ir in orbsym[astring]:
+        hfsym ^= ir
+    for ir in orbsym[bstring]:
+        hfsym ^= ir
+    
+    guess_dets = []
+    if hfsym == wfnsym:
+        guess_dets.append(numpy.hstack((numpy.arange(neleca)*2, numpy.arange(nelecb)*2+1)))
+    for i in range(neleca):
+        for j in range(neleca, norb):
+    # try single excite beta string
+            cis_sym = hfsym
+            cis_sym ^= orbsym[i]
+            cis_sym ^= orbsym[j]
+            if cis_sym == wfnsym:
+                det = numpy.hstack((numpy.arange(i)*2,numpy.arange(i+1,neleca)*2))
+                det = numpy.append(det, j*2)
+                det = numpy.append(det, numpy.arange(nelecb)*2+1)
+
+    for i in range(nelecb):
+        for j in range(nelecb, norb):
+            cis_sym = hfsym
+            cis_sym ^= orbsym[i]
+            cis_sym ^= orbsym[j]
+            if cis_sym == wfnsym:
+                det = numpy.hstack((numpy.arange(i)*2+1,numpy.arange(i+1,nelecb)*2+1))
+                det = numpy.append(det, j*2+1)
+                det = numpy.append(det, numpy.arange(neleca)*2)
+                guess_dets.append(det)
+
+    if len(guess_dets) == 0:
+        raise RuntimeError("No guess wavefunction found, "\
+                           "please specify irrep_nelec or a proper initialState.")
+
+    elif len(guess_dets) > nroots:
+        return guess_dets#[:nroots]
+    
+    else:
+        return guess_dets

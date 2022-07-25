@@ -10,7 +10,7 @@ from pyscf.scf import dhf, jk, _vhf
 #from pyscf.shciscf import socutils
 from pyscf.x2c import sfx2c1e
 from pyscf.x2c import x2c
-from spinor2sph import spinor2sph_soc
+from pyscf.shciscf.spinor2sph import spinor2sph_soc
 x2camf  = None
 try:
     import x2camf
@@ -224,7 +224,7 @@ def get_soc_integrals(method, dm=None, pc1e=None, pc2e=None, unc=None, atomic=Tr
         pc1e = 'None'
     if pc2e is None:
         pc2e = 'None'
-    if (pc1e is 'None' and pc2e is 'None'):
+    if (pc1e == 'None' and pc2e == 'None'):
         if has_ecp:
             hso1e = mol.intor('ECPso')
             print('''
